@@ -1,0 +1,27 @@
+helmDefaults:
+  tillerNamespace: kube-system
+  tillerless: true
+  install: true
+
+helmRepos:
+  bitnami: https://charts.bitnami.com/bitnami
+  mosip: https://mosip.github.io/mosip-helm
+
+namespaces:
+  kube-system:
+    protected: true
+  apitestrig:
+    protected: false
+
+apps:
+  apitestrig:
+    namespace: apitestrig
+    enabled: true
+    version: 0.0.1-develop
+    chart: ./apitestrig
+    wait: true
+    valuesFile: ./apitestrig/values.yaml
+    set:
+      modules[0].enabled: false
+      crontime: "0 6 * * *"
+   
