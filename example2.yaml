@@ -1,0 +1,133 @@
+helmDefaults:
+  tillerNamespace: kube-system
+  tillerless: true
+  install: true
+
+helmRepos:
+  bitnami: https://charts.bitnami.com/bitnami
+  mosip: https://mosip.github.io/mosip-helm
+
+namespaces:
+  kube-system:
+    protected: true
+  apitestrig:
+    protected: false
+  postgres:
+    protected: true
+  postgres-latest:
+    protected: false
+  keycloak:
+    protected: true
+  keycloak-latest:
+    protected: false
+  softhsm:
+    protected: true
+  softhsm-latest:
+    protected: false
+  minio-latest:
+    protected: false
+
+apps:
+  postgres:
+    namespace: postgres-latest
+    enabled: true
+    version: 13.1.5
+    chart: bitnami/postgresql
+    wait: true
+    values:
+      - https://github.com/mosip/mosip-infra/blob/develop/deployment/v3/external/postgres/values.yaml
+
+  istio-addons:
+    namespace: postgres-latest
+    enabled: true
+    version: 0.1.0
+    chart: ~/workdir/mosip-infra/deployment/v3/external/postgres/chart/istio-addons
+    exec:
+      postgresHost: "kubectl get cm global -n default -o jsonpath={.data.mosip-postgres-host}"
+    wait: true
+
+  postgres-init:
+    namespace: postgres-latest
+    enabled: true
+    version: 0.0.1-develop
+    chart: mosip/postgres-init
+    wait: true
+    values:
+      - https://github.com/mosip/mosip-infra/blob/develop/deployment/v3/external/postgres/init_values.yaml
+
+  keycloak:
+    namespace: keycloak-latest
+    enabled: true
+    version: 7.1.18
+    chart: mosip/keycloak
+    wait: true
+    set:
+      image.repository: "mosipqa/mosip-artemis-keycloak"
+      image.tag: "develop"
+      image.pullPolicy: "Always"
+    values:
+      - https://github.com/mosip/mosip-infra/blob/develop/deployment/v3/external/iam/values.yaml
+
+  istio-addons:
+    namespace: keycloak-latest
+    enabled: true
+    version: 0.1.0
+    chart: /home/techno-408/workdir/mosip-infra/deployment/v3/external/iam/chart/istio-addons
+    exec:
+      keycloakExternalHost: "kubectl get cm global -o jsonpath={.data.mosip-iam-external-host}"
+      keycloakInternalHost: "echo keycloak.keycloak-latest"
+      service: "keycloak"
+    wait: true    
+
+  keycloak-init:
+    namespace: keycloak-latest
+    enabled: true
+    version: 12.0.2
+    chart: mosip/keycloak-init
+    exec:
+      IAMHOST_URL: $(kubectl get cm global -o jsonpath={.data.mosip-iam-external-host})
+      keycloak.realms.mosip.realm_config.attributes.frontendUrl: "https://$(kubectl get cm global -o jsonpath={.data.mosip-iam-external-host})/auth"      
+    wait: true
+    set:
+      keycloak.realms.mosip.realm_config.smtpServer.auth: "false"
+      keycloak.realms.mosip.realm_config.smtpServer.host: "smtp.gmail.com"
+      keycloak.realms.mosip.realm_config.smtpServer.port: "465"
+      keycloak.realms.mosip.realm_config.smtpServer.from: "mosipqa@gmail.com"
+      keycloak.realms.mosip.realm_config.smtpServer.starttls: "false"
+      keycloak.realms.mosip.realm_config.smtpServer.ssl: "true"
+
+  softhsm-kernel:
+    namespace: softhsm-latest
+    enabled: true
+    version: 12.0.1
+    chart: mosip/softhsm
+    wait: true
+    values:
+      - https://github.com/mosip/mosip-infra/blob/develop/deployment/v3/external/hsm/softhsm/values.yaml
+
+  softhsm-ida:
+    namespace: softhsm-latest
+    enabled: true
+    version: 12.0.1
+    chart: mosip/softhsm
+    wait: true
+    values:
+      - https://github.com/mosip/mosip-infra/blob/develop/deployment/v3/external/hsm/softhsm/values.yaml
+
+  minio:
+    namespace: minio-latest
+    enabled: true
+    version: 10.1.6
+    chart: mosip/minio
+    wait: true
+    values:
+      - https://github.com/mosip/mosip-infra/blob/develop/deployment/v3/external/object-store/minio/values.yaml
+
+  istio-addons:
+    namespace: minio-latest
+    enabled: true
+    version: 1.2.0
+    chart: /home/techno-408/workdir/mosip-infra/deployment/v3/external/object-store/minio/chart/istio-addons
+    exec:
+      externalHost: $(kubectl get cm global -n default -o jsonpath={.data.mosip-minio-host})
+    wait: true
