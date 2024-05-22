@@ -1,0 +1,22 @@
+name: Deploy services with Helmsman
+
+on:
+  push:
+    paths:
+      - dsf.yaml
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install Helmsman
+        run: |
+          curl -L https://github.com/Praqma/helmsman/releases/download/v3.7.7/helmsman_3.7.7_linux_amd64.tar.gz -o helmsman.tar.gz
+          tar xzf helmsman.tar.gz
+          sudo mv helmsman /usr/local/bin
+
+      - name: Deploy using Helmsman
+        run: helmsman -f dsf.yaml --apply
