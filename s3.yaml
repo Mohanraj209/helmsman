@@ -40,6 +40,9 @@ spec:
            echo Creating secrets as per Minio native installation
            USER=$(kubectl -n minio get secret minio -o jsonpath='{.data.root-user}' | base64 --decode)
            PASS=$(kubectl -n minio get secret minio -o jsonpath='{.data.root-password}' | base64 --decode)
+
+           export USER
+           export PASS
            echo object-store secret and config map is set now.
            return 0
            } 
