@@ -23,7 +23,7 @@ spec:
         helm.sh/chart: "{{.Chart.Name}}-{{.Chart.Version}}"
         sidecar.istio.io/inject: "false"
     spec:
-      serviceAccountName: {{ include "config-server.serviceAccountName" . }}
+      serviceAccountName: {{ include "msg-gateways.serviceAccountName" . }}
       restartPolicy: Never
       containers:
       - name: pre-install-job
@@ -61,7 +61,7 @@ spec:
            unset yn
            read -p "Would you like to use mock-sms (Y/N) [ Default: Y ] : " yn
            if [ -z $yn ]; then
-           yn=Y;
+             yn=Y;
            fi
            if [ $yn != "Y" ]; then
                read -p "Please enter the SMS host " SMS_HOST
