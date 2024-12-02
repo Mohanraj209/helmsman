@@ -1,4 +1,4 @@
-name: Deploy services with Helmsman
+name: Deploy services using Helmsman
 
 on:
   push:
