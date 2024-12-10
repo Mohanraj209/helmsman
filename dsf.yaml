@@ -1,0 +1,207 @@
+helmDefaults:
+  tillerNamespace: kube-system
+  tillerless: true
+  install: true
+
+helmRepos:
+  bitnami: https://charts.bitnami.com/bitnami
+  mosip: https://mosip.github.io/mosip-helm
+  wiremind: https://wiremind.github.io/wiremind-helm-charts
+  kafka-ui: https://provectus.github.io/kafka-ui-charts
+  
+namespaces:
+  kube-system:
+    protected: true
+  postgres:
+    protected: true
+  keycloak:
+    protected: true
+  softhsm:
+    protected: false
+  minio:
+    protected: true
+  clamav:
+    protected: false
+  activemq:
+    protected: true
+  kafka:
+    protected: false
+  s3:
+    protected: true
+  msg-gateways:
+    protected: true
+  captcha:
+    protected: true
+
+apps:
+  postgres:
+    namespace: postgres
+    enabled: true
+    version: 13.1.5
+    chart: bitnami/postgresql
+    wait: true
+    priority: -20
+    values:
+      - https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/postgres/values.yaml
+
+  istio-addons-psql:
+    namespace: postgres
+    enabled: true
+    version: 0.1.0
+    chart: /home/techno-408/workdir/mosip-infra/deployment/v3/external/postgres/chart/istio-addons
+    set:
+      postgresHost: "postgres.soil.mosip.net"
+    wait: true
+    priority: -19
+
+  postgres-init:
+    namespace: postgres
+    enabled: true
+    version: 0.0.1-develop
+    chart: mosip/postgres-init
+    wait: true
+    values:
+      - https://github.com/mosip/mosip-infra/blob/develop/deployment/v3/external/postgres/init_values.yaml
+    priority: -18
+
+  keycloak:
+    namespace: keycloak
+    enabled: true
+    version: 7.1.18
+    chart: mosip/keycloak
+    wait: true
+    set:
+      image.repository: "mosipqa/mosip-artemis-keycloak"
+      image.tag: "develop"
+      image.pullPolicy: "Always"
+    values:
+      - https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/iam/values.yaml
+    priority: -17
+
+  istio-addons-iam:
+    namespace: keycloak
+    enabled: true
+    version: 0.1.0
+    chart: /home/techno-408/workdir/mosip-infra/deployment/v3/external/iam/chart/istio-addons
+    set:
+      keycloakExternalHost: "iam.soil.mosip.net"
+      keycloakInternalHost: "keycloak.keycloak"
+      service: "keycloak"
+    wait: true
+    priority: -16   
+
+  keycloak-init:
+    namespace: keycloak
+    enabled: true
+    version: 12.0.2
+    chart: mosip/keycloak-init
+    wait: true
+    set:
+      IAMHOST_URL: "iam.soil.mosip.net"
+      keycloak.realms.mosip.realm_config.attributes.frontendUrl: "https://iam.soil.mosip.net/auth"
+      keycloak.realms.mosip.realm_config.smtpServer.auth: "false"
+      keycloak.realms.mosip.realm_config.smtpServer.host: "smtp.gmail.com"
+      keycloak.realms.mosip.realm_config.smtpServer.port: "465"
+      keycloak.realms.mosip.realm_config.smtpServer.from: "mosipqa@gmail.com"
+      keycloak.realms.mosip.realm_config.smtpServer.starttls: "false"
+      keycloak.realms.mosip.realm_config.smtpServer.ssl: "true"
+    values:
+      - https://raw.githubusercontent.com/mosip/mosip-helm/develop/charts/keycloak-init/values.yaml
+    priority: -15
+
+  softhsm-kernel:
+    namespace: softhsm
+    enabled: true
+    version: 12.0.1
+    chart: mosip/softhsm
+    wait: true
+    values:
+      - https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/hsm/softhsm/values.yaml
+    priority: -14
+
+  softhsm-ida:
+    namespace: softhsm
+    enabled: true
+    version: 12.0.1
+    chart: mosip/softhsm
+    wait: true
+    values:
+      - https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/hsm/softhsm/values.yaml
+    priority: -13
+
+  minio:
+    namespace: minio
+    enabled: true
+    version: 10.1.6
+    chart: mosip/minio
+    wait: true
+    values:
+      - https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/object-store/minio/values.yaml
+    priority: -12
+
+  istio-addons-minio:
+    namespace: minio
+    enabled: true
+    version: 1.2.0
+    chart: /home/techno-408/workdir/mosip-infra/deployment/v3/external/object-store/minio/chart/istio-addons
+    set:
+      externalHost: "minio.soil.mosip.net"
+    wait: true
+    hooks:
+      postInstall: "s3.yaml"
+    priority: -11
+
+  clamav:
+    namespace: clamav
+    enabled: true
+    version: 3.1.0
+    chart: wiremind/clamav
+    wait: true
+    values:
+      - https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/antivirus/clamav/values.yaml
+    priority: -9
+
+  activemq:
+    namespace: activemq
+    enabled: true
+    version: 0.0.2
+    chart: mosip/activemq-artemis
+    values: 
+      - https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/activemq/values.yaml
+    set: 
+      istio.hosts[0]: "activemq.soil.mosip.net"
+    wait: true
+    priority: -8
+  
+  kafka: 
+    namespace: kafka
+    enabled: true
+    version: 18.3.1
+    chart: mosip/kafka
+    values: 
+      - https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/kafka/values.yaml
+    wait: true
+    priority: -7
+
+  kafka-ui:
+    namespace: kafka
+    enabled: true
+    version: 0.4.2
+    chart: kafka-ui/kafka-ui
+    values:
+      - https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/kafka/ui-values.yaml
+    wait: true
+    priority: -6
+
+  istio-addons-kafka:
+    namespace: kafka
+    enabled: true
+    version: 1.2.0
+    chart: /home/techno-408/workdir/mosip-infra/deployment/v3/external/kafka/chart/istio-addons
+    set:
+      kafkaUiHost: "kafka.soil.mosip.net"
+      installName: "kafka-ui"
+    wait: true
+    hooks:
+      postInstall: "captcha.yaml,msg-gateways.yaml"
+    priority: -5
