@@ -48,7 +48,7 @@ jobs:
       # Set up Kubernetes
       - name: Setup Kubectl
         run: |
-          curl -LO https://dl.k8s.io/release/v1.28.9+rke2r1/bin/linux/amd64/kubectl
+          curl -LO https://dl.k8s.io/release/v1.27.9/bin/linux/amd64/kubectl
           chmod +x kubectl
           mkdir -p ~/.local/bin
           mv ./kubectl ~/.local/bin/kubectl
