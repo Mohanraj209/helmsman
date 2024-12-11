@@ -62,7 +62,7 @@ jobs:
         env:
           KUBECONFIG: ${{ secrets.KUBECONFIG }}
         run: |
-          curl -LO https://dl.k8s.io/release/v1.27.2/bin/linux/amd64/kubectl
+          curl -LO https://dl.k8s.io/release/v1.31.3/bin/linux/amd64/kubectl
           chmod +x kubectl
           mkdir -p ~/.local/bin
           mv ./kubectl ~/.local/bin/kubectl
