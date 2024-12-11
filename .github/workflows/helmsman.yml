@@ -73,6 +73,7 @@ jobs:
           export KUBECONFIG=$HOME/.kube/config
           kubectl config view
           kubectl get nodes
+          helmsman --debug --${{ github.event.inputs.mode }} -f dsf.yaml
 
-      - name: Deploy using Helmsman
-        run: helmsman --debug --${{ github.event.inputs.mode }} -f dsf.yaml
+     # - name: Deploy using Helmsman
+     #   run: helmsman --debug --${{ github.event.inputs.mode }} -f dsf.yaml
