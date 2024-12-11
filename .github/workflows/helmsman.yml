@@ -73,7 +73,7 @@ jobs:
         run: |
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBECONFIG }}" | sudo tee $HOME/.kube/config
-          chmod 600 $HOME/.kube/config
+          sudo chmod 600 $HOME/.kube/config
           kubectl config view
           kubectl get nodes
 
