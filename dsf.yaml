@@ -13,25 +13,25 @@ namespaces:
   kube-system:
     protected: true
   postgres:
-    protected: true
+    protected: false
   keycloak:
-    protected: true
+    protected: false
   softhsm:
     protected: false
   minio:
-    protected: true
+    protected: false
   clamav:
     protected: false
   activemq:
-    protected: true
+    protected: false
   kafka:
     protected: false
   s3:
-    protected: true
+    protected: false
   msg-gateways:
-    protected: true
+    protected: false
   captcha:
-    protected: true
+    protected: false
 
 apps:
   postgres:
@@ -48,7 +48,7 @@ apps:
     namespace: postgres
     enabled: true
     version: 0.1.0
-    chart: /home/techno-408/workdir/mosip-infra/deployment/v3/external/postgres/chart/istio-addons
+    chart: ./utils/postgres-istio-addons-0.1.0.tgz
     set:
       postgresHost: "postgres.soil.mosip.net"
     wait: true
@@ -82,7 +82,7 @@ apps:
     namespace: keycloak
     enabled: true
     version: 0.1.0
-    chart: /home/techno-408/workdir/mosip-infra/deployment/v3/external/iam/chart/istio-addons
+    chart: ./utils/iam-istio-addons-0.1.0.tgz
     set:
       keycloakExternalHost: "iam.soil.mosip.net"
       keycloakInternalHost: "keycloak.keycloak"
@@ -143,7 +143,7 @@ apps:
     namespace: minio
     enabled: true
     version: 1.2.0
-    chart: /home/techno-408/workdir/mosip-infra/deployment/v3/external/object-store/minio/chart/istio-addons
+    chart: ./utils/minio-istio-addons-1.2.0.tgz
     set:
       externalHost: "minio.soil.mosip.net"
     wait: true
@@ -197,11 +197,12 @@ apps:
     namespace: kafka
     enabled: true
     version: 1.2.0
-    chart: /home/techno-408/workdir/mosip-infra/deployment/v3/external/kafka/chart/istio-addons
+    chart: ./utils/kafka-istio-addons-1.2.0.tgz
     set:
       kafkaUiHost: "kafka.soil.mosip.net"
       installName: "kafka-ui"
     wait: true
     hooks:
-      postInstall: "captcha.yaml,msg-gateways.yaml"
+      postInstall: "captcha.yaml"
+      postInstall: "msg-gateways.yaml"
     priority: -5
