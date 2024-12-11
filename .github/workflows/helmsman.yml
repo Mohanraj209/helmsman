@@ -54,7 +54,7 @@ jobs:
 
       - name: Install Helmsman
         run: |
-          curl -L https://github.com/Praqma/helmsman/releases/download/v3.7.7/helmsman_3.7.7_linux_amd64.tar.gz -o helmsman.tar.gz
+          curl -L https://github.com/Praqma/helmsman/releases/download/v3.17.1/helmsman_3.17.1_linux_amd64.tar.gz -o helmsman.tar.gz
           tar xzf helmsman.tar.gz
           sudo mv helmsman /usr/local/bin          
 
