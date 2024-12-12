@@ -12,6 +12,14 @@ helmRepos:
 namespaces:
   kube-system:
     protected: true
+  cattle-monitoring-system:
+    protected: false
+  cattle-dashboards:
+    protected: false
+  istio-system:
+    protected: false
+  istio-operator:
+    protected: false
   postgres:
     protected: false
   keycloak:
@@ -34,6 +42,28 @@ namespaces:
     protected: false
 
 apps:
+  rancher-monitoring-crd:
+    namespace: cattle-monitoring-system
+    enabled: true
+    version: 103.1.1+up45.31.1
+    chart: mosip/rancher-monitoring-crd
+    wait: true
+    priority: -22    
+
+  rancher-monitoring:
+    namespace: cattle-monitoring-system
+    enabled: true
+    version: 103.1.1+up45.31.1
+    chart: mosip/rancher-monitoring
+    wait: true
+    priority: -21
+    hooks:
+      postInstall: "istio.yaml"
+      postInstall: "istio-gateway.yaml"
+      postInstall: "httpbin.yaml"
+    values:
+      - https://raw.githubusercontent.com/mosip/k8s-infra/refs/heads/develop/monitoring/values.yaml
+
   postgres:
     namespace: postgres
     enabled: true

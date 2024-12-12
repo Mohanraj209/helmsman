@@ -23,7 +23,7 @@ spec:
         helm.sh/chart: "{{.Chart.Name}}-{{.Chart.Version}}"
         sidecar.istio.io/inject: "false"
     spec:
-      serviceAccountName: {{ include "s3.serviceAccountName" . }}
+      serviceAccountName: {{ include "istio-system.serviceAccountName" . }}
       restartPolicy: Never
       containers:
       - name: post-install-job
@@ -33,19 +33,31 @@ spec:
         - -c
         - |
            #!/bin/bash
-           function installing_Cred() {
-           echo Istio label
-           kubectl label ns $NS istio-injection=enabled --overwrite
+           # Install ingress gateways
 
-           echo Creating secrets as per Minio native installation
-           USER=$(kubectl -n minio get secret minio -o jsonpath='{.data.root-user}' | base64 --decode)
-           PASS=$(kubectl -n minio get secret minio -o jsonpath='{.data.root-password}' | base64 --decode)
+           #NOTE: istioctl is specific to kubeconfig file. If you've more than one config files, please specify them like mentioned below:
+           #istioctl --kubeconfig <path-to-config-file> or use -c as shorthand for --kubeconfig.
 
-           export USER
-           export PASS
-           echo object-store secret and config map is set now.
-           return 0
-           } 
+           NS=istio-system
+
+           echo Operator init
+           istioctl operator init
+
+           function installing_istio() {
+             echo Create ingress gateways, load balancers and istio monitoring
+             kubectl apply -f ./utils/istio-mesh/nodeport/iop-mosip.yaml
+             kubectl apply -f ./utils/istio-mesh/nodeport/istio-monitoring/
+             echo Wait for all resources to come up
+             sleep 10
+             kubectl -n $NS rollout status deploy istiod
+             kubectl -n $NS rollout status deploy istio-ingressgateway
+             kubectl -n $NS rollout status deploy istio-ingressgateway-internal
+
+             echo ------ IMPORTANT ---------
+             echo If you already have pods running with envoy sidecars, restart all of them NOW.  Check if all of them appear with command "istioctl proxy-status"
+             echo --------------------------
+             return 0
+           }
 
            # set commands for error handling.
            set -e
@@ -53,4 +65,4 @@ spec:
            set -o nounset   ## set -u : exit the script if you try to use an uninitialised variable
            set -o errtrace  # trace ERR through 'time command' and other functions
            set -o pipefail  # trace ERR through pipes
-           installing_Cred   # calling function
+           installing_istio   # calling function

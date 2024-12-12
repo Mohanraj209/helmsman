@@ -23,7 +23,7 @@ spec:
         helm.sh/chart: "{{.Chart.Name}}-{{.Chart.Version}}"
         sidecar.istio.io/inject: "false"
     spec:
-      serviceAccountName: {{ include "s3.serviceAccountName" . }}
+      serviceAccountName: {{ include "httpbin.serviceAccountName" . }}
       restartPolicy: Never
       containers:
       - name: post-install-job
@@ -33,19 +33,24 @@ spec:
         - -c
         - |
            #!/bin/bash
-           function installing_Cred() {
-           echo Istio label
-           kubectl label ns $NS istio-injection=enabled --overwrite
+           ## Usage: ./install.sh [kubeconfig]
 
-           echo Creating secrets as per Minio native installation
-           USER=$(kubectl -n minio get secret minio -o jsonpath='{.data.root-user}' | base64 --decode)
-           PASS=$(kubectl -n minio get secret minio -o jsonpath='{.data.root-password}' | base64 --decode)
+           if [ $# -ge 1 ] ; then
+             export KUBECONFIG=$1
+           fi
 
-           export USER
-           export PASS
-           echo object-store secret and config map is set now.
-           return 0
-           } 
+           NS=httpbin
+           kubectl create ns $NS
+
+           function installing_httpbin() {
+             kubectl label ns $NS istio-injection=enabled --overwrite
+
+             kubectl -n $NS apply -f ./utils/httpbin/svc.yaml
+             kubectl -n $NS apply -f ./utils/httpbin/deployment.yaml
+             kubectl -n $NS apply -f ./utils/httpbin/deployment-busybox-curl.yaml
+             kubectl -n $NS apply -f ./utils/httpbin/vs.yaml
+             return 0
+           }
 
            # set commands for error handling.
            set -e
@@ -53,4 +58,4 @@ spec:
            set -o nounset   ## set -u : exit the script if you try to use an uninitialised variable
            set -o errtrace  # trace ERR through 'time command' and other functions
            set -o pipefail  # trace ERR through pipes
-           installing_Cred   # calling function
+           installing_httpbin  # calling function

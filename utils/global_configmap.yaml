@@ -1,0 +1,35 @@
+## The data here is of generic interest to modules in different namespaces hence this is marked as global.
+## Replace your domain names here.
+## mosip-api-host:  External public access. (Typically required only in production rollouts).
+## mosip-api-internal-host: Internal secure access over Wireguard.
+## By default all domains and subdomains listed below point to mosip-api-internal-host. Modify this default behavior ONLY in production rollout as follows:
+##     mosip-prereg-host:  Points to mosip-api-host.
+##     mosip-pmp-host: Points to mosip-api-host.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: global
+  namespace: default
+data:
+  installation-name: soil
+  installation-domain: soil.mosip.net
+  mosip-version: develop
+  mosip-api-host: api.soil.mosip.net
+  mosip-api-internal-host: api-internal.soil.mosip.net
+  mosip-prereg-host: prereg.soil.mosip.net
+  mosip-activemq-host: activemq.soil.mosip.net
+  mosip-kibana-host: kibana.soil.mosip.net
+  mosip-admin-host: admin.soil.mosip.net
+  mosip-regclient-host: regclient.soil.mosip.net
+  mosip-minio-host: minio.soil.mosip.net
+  mosip-kafka-host: kafka.soil.mosip.net
+  mosip-iam-external-host: iam.soil.mosip.net
+  mosip-postgres-host: postgres.soil.mosip.net
+  mosip-pmp-host: pmp.soil.mosip.net
+  mosip-resident-host: resident.soil.mosip.net
+  mosip-compliance-host: compliance.soil.mosip.net
+  mosip-esignet-host: esignet.soil.mosip.net
+  mosip-smtp-host: smtp.soil.mosip.net
+  mosip-signup-host: signup.soil.mosip.net
+  is_glowroot_env: absent
