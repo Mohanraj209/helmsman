@@ -78,7 +78,7 @@ apps:
     namespace: postgres
     enabled: true
     version: 0.1.0
-    chart: ./utils/postgres-istio-addons-0.1.0.tgz
+    chart: ./utils/istio-addons/postgres-istio-addons-0.1.0.tgz
     set:
       postgresHost: "postgres.soil.mosip.net"
     wait: true
@@ -112,7 +112,7 @@ apps:
     namespace: keycloak
     enabled: true
     version: 0.1.0
-    chart: ./utils/iam-istio-addons-0.1.0.tgz
+    chart: ./utils/istio-addons/iam-istio-addons-0.1.0.tgz
     set:
       keycloakExternalHost: "iam.soil.mosip.net"
       keycloakInternalHost: "keycloak.keycloak"
@@ -173,7 +173,7 @@ apps:
     namespace: minio
     enabled: true
     version: 1.2.0
-    chart: ./utils/minio-istio-addons-1.2.0.tgz
+    chart: ./utils/istio-addons/minio-istio-addons-1.2.0.tgz
     set:
       externalHost: "minio.soil.mosip.net"
     wait: true
@@ -227,7 +227,7 @@ apps:
     namespace: kafka
     enabled: true
     version: 1.2.0
-    chart: ./utils/kafka-istio-addons-1.2.0.tgz
+    chart: ./utils/istio-addons/kafka-istio-addons-1.2.0.tgz
     set:
       kafkaUiHost: "kafka.soil.mosip.net"
       installName: "kafka-ui"
