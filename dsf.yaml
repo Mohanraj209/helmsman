@@ -13,7 +13,7 @@ namespaces:
   kube-system:
     protected: true
   cattle-monitoring-system:
-    protected: false
+    protected: false  
   istio-system:
     protected: false
   istio-operator:
@@ -40,13 +40,13 @@ namespaces:
     protected: false
 
 apps:
-  rancher-monitoring-crd:
-    namespace: cattle-monitoring-system
-    enabled: true
-    version: 103.1.1+up45.31.1
-    chart: mosip/rancher-monitoring-crd
-    wait: true
-    priority: -22    
+#  rancher-monitoring-crd:
+#    namespace: cattle-monitoring-system
+#    enabled: true
+#    version: 103.1.1+up45.31.1
+#    chart: mosip/rancher-monitoring-crd
+#    wait: true
+#    priority: -22    
 
   rancher-monitoring:
     namespace: cattle-monitoring-system
