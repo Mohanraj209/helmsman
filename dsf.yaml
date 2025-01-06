@@ -24,15 +24,15 @@ namespaces:
   httpbin:
     protected: false
   postgres:
-    protected: true
+    protected: false
   keycloak:
-    protected: true
+    protected: false
   softhsm:
-    protected: true
+    protected: false
   minio:
-    protected: true
+    protected: false
   clamav:
-    protected: true
+    protected: false
   activemq:
     protected: false
   kafka:
@@ -53,7 +53,7 @@ apps:
     wait: true
     priority: -24
     hooks:
-      postInstall: "install-istio-and-httpbin.sh"
+      postInstall: "./hooks/install-istio-and-httpbin.sh"
 
   rancher-monitoring:
     namespace: cattle-monitoring-system
@@ -67,7 +67,7 @@ apps:
     priority: -23
     timeout: 600
     hooks:
-      postInstall: "alerting-setup.sh"
+      postInstall: "./hooks/alerting-setup.sh"
 
   elasticsearch:
     namespace: cattle-logging-system
@@ -106,7 +106,7 @@ apps:
     priority: -21
     timeout: 600
     hooks:
-      postInstall: "post_logging-setup.sh"
+      postInstall: "./hooks/post_logging-setup.sh"
         
   postgres:
     namespace: postgres
@@ -214,7 +214,7 @@ apps:
       externalHost: "minio.soil.mosip.net"
     wait: true
     hooks:
-      postInstall: "s3-setup.sh shubham1"
+      postInstall: "./hooks/s3-setup.sh shubham1"
     priority: -11
 
   clamav:
@@ -237,7 +237,7 @@ apps:
     wait: true
     priority: -8
     hooks:
-      postInstall: "captcha-setup.sh mohan1234 shubham1234 praful1234 rakshith1234 abhi1234 bhumi1234"
+      postInstall: "./hooks/captcha-setup.sh mohan1234 shubham1234 praful1234 rakshith1234 abhi1234 bhumi1234"
   
   kafka: 
     namespace: kafka
@@ -267,5 +267,5 @@ apps:
       installName: "kafka-ui"
     wait: true
     hooks:
-      postInstall: "msg-gateways-setup.sh"
+      postInstall: "./hooks/msg-gateways-setup.sh"
     priority: -5
