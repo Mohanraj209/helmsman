@@ -8,26 +8,31 @@ helmRepos:
   mosip: https://mosip.github.io/mosip-helm
   wiremind: https://wiremind.github.io/wiremind-helm-charts
   kafka-ui: https://provectus.github.io/kafka-ui-charts
+  banzaicloud-stable: https://charts.helm.sh/stable
   
 namespaces:
   kube-system:
     protected: true
   cattle-monitoring-system:
     protected: false
+  cattle-logging-system:
+    protected: false
   istio-system:
     protected: false
   istio-operator:
     protected: false
+  httpbin:
+    protected: false
   postgres:
-    protected: false
+    protected: true
   keycloak:
-    protected: false
+    protected: true
   softhsm:
-    protected: false
+    protected: true
   minio:
-    protected: false
+    protected: true
   clamav:
-    protected: false
+    protected: true
   activemq:
     protected: false
   kafka:
@@ -46,7 +51,9 @@ apps:
     version: 103.1.1+up45.31.1
     chart: mosip/rancher-monitoring-crd
     wait: true
-    priority: -22    
+    priority: -24
+    hooks:
+      postInstall: "install-istio-and-httpbin.sh"
 
   rancher-monitoring:
     namespace: cattle-monitoring-system
@@ -55,15 +62,52 @@ apps:
     chart: mosip/rancher-monitoring
     wait: true
     dependencies:
-      - rancher-monitoring-crd    
-    priority: -21
+      - rancher-monitoring-crd
+    valuesFile: https://raw.githubusercontent.com/mosip/k8s-infra/refs/heads/develop/monitoring/values.yaml    
+    priority: -23
+    timeout: 600
     hooks:
-      postInstall: "istio.yaml"
-      postInstall: "istio-gateway.yaml"
-      postInstall: "httpbin.yaml"
-    values:
-      - https://raw.githubusercontent.com/mosip/k8s-infra/refs/heads/develop/monitoring/values.yaml
+      postInstall: "alerting-setup.sh"
 
+  elasticsearch:
+    namespace: cattle-logging-system
+    enabled: true
+    version: 17.9.25
+    chart: mosip/elasticsearch
+    wait: true
+    priority: -22
+    valuesFile: https://raw.githubusercontent.com/mosip/k8s-infra/refs/heads/develop/logging/es_values.yaml
+
+  istio-addons-logging:
+    namespace: cattle-logging-system 
+    enabled: true
+    version: 0.1.0
+    chart: ./utils/istio-addons/logging-istio-addons-0.1.0.tgz
+    set:
+      KIBANA_HOST: "kibana.soil.mosip.net"
+      KIBANA_NAME: "elasticsearch-kibana"
+    wait: true
+    priority: -21
+    
+  rancher-logging-crd:
+    namespace: cattle-logging-system
+    enabled: true
+    version: 103.1.1+up4.4.0
+    chart: mosip/rancher-logging-crd
+    wait: true
+    priority: -21
+    
+  rancher-logging:
+    namespace: cattle-logging-system
+    enabled: true
+    version: 103.1.1+up4.4.0
+    chart: mosip/rancher-logging
+    wait: true
+    priority: -21
+    timeout: 600
+    hooks:
+      postInstall: "post_logging-setup.sh"
+        
   postgres:
     namespace: postgres
     enabled: true
@@ -71,8 +115,7 @@ apps:
     chart: bitnami/postgresql
     wait: true
     priority: -20
-    values:
-      - https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/postgres/values.yaml
+    valuesFile: https://raw.githubusercontent.com/Mohanraj209/mosip-infra/refs/heads/develop/deployment/v3/external/postgres/values.yaml
 
   istio-addons-psql:
     namespace: postgres
@@ -90,8 +133,7 @@ apps:
     version: 0.0.1-develop
     chart: mosip/postgres-init
     wait: true
-    values:
-      - https://github.com/mosip/mosip-infra/blob/develop/deployment/v3/external/postgres/init_values.yaml
+    valuesFile: https://raw.githubusercontent.com/Mohanraj209/mosip-infra/refs/heads/develop/deployment/v3/external/postgres/init_values.yaml
     priority: -18
 
   keycloak:
@@ -104,8 +146,7 @@ apps:
       image.repository: "mosipqa/mosip-artemis-keycloak"
       image.tag: "develop"
       image.pullPolicy: "Always"
-    values:
-      - https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/iam/values.yaml
+    valuesFile: https://raw.githubusercontent.com/mosip/mosip-infra/refs/heads/develop/deployment/v3/external/iam/values.yaml
     priority: -17
 
   istio-addons-iam:
@@ -135,8 +176,6 @@ apps:
       keycloak.realms.mosip.realm_config.smtpServer.from: "mosipqa@gmail.com"
       keycloak.realms.mosip.realm_config.smtpServer.starttls: "false"
       keycloak.realms.mosip.realm_config.smtpServer.ssl: "true"
-    values:
-      - https://raw.githubusercontent.com/mosip/mosip-helm/develop/charts/keycloak-init/values.yaml
     priority: -15
 
   softhsm-kernel:
@@ -145,8 +184,7 @@ apps:
     version: 12.0.1
     chart: mosip/softhsm
     wait: true
-    values:
-      - https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/hsm/softhsm/values.yaml
+    valuesFile: https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/hsm/softhsm/values.yaml
     priority: -14
 
   softhsm-ida:
@@ -155,8 +193,7 @@ apps:
     version: 12.0.1
     chart: mosip/softhsm
     wait: true
-    values:
-      - https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/hsm/softhsm/values.yaml
+    valuesFile: https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/hsm/softhsm/values.yaml
     priority: -13
 
   minio:
@@ -165,8 +202,7 @@ apps:
     version: 10.1.6
     chart: mosip/minio
     wait: true
-    values:
-      - https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/object-store/minio/values.yaml
+    valuesFile: https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/object-store/minio/values.yaml
     priority: -12
 
   istio-addons-minio:
@@ -178,7 +214,7 @@ apps:
       externalHost: "minio.soil.mosip.net"
     wait: true
     hooks:
-      postInstall: "s3.yaml"
+      postInstall: "s3-setup.sh shubham1"
     priority: -11
 
   clamav:
@@ -187,8 +223,7 @@ apps:
     version: 3.1.0
     chart: wiremind/clamav
     wait: true
-    values:
-      - https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/antivirus/clamav/values.yaml
+    valuesFile: https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/antivirus/clamav/values.yaml
     priority: -9
 
   activemq:
@@ -196,20 +231,20 @@ apps:
     enabled: true
     version: 0.0.2
     chart: mosip/activemq-artemis
-    values: 
-      - https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/activemq/values.yaml
+    valuesFile: https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/activemq/values.yaml
     set: 
       istio.hosts[0]: "activemq.soil.mosip.net"
     wait: true
     priority: -8
+    hooks:
+      postInstall: "captcha-setup.sh mohan1234 shubham1234 praful1234 rakshith1234 abhi1234 bhumi1234"
   
   kafka: 
     namespace: kafka
     enabled: true
     version: 18.3.1
     chart: mosip/kafka
-    values: 
-      - https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/kafka/values.yaml
+    valuesFile:  https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/kafka/values.yaml
     wait: true
     priority: -7
 
@@ -218,8 +253,7 @@ apps:
     enabled: true
     version: 0.4.2
     chart: kafka-ui/kafka-ui
-    values:
-      - https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/kafka/ui-values.yaml
+    valuesFile: https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/kafka/ui-values.yaml
     wait: true
     priority: -6
 
@@ -233,6 +267,5 @@ apps:
       installName: "kafka-ui"
     wait: true
     hooks:
-      postInstall: "captcha.yaml"
-      postInstall: "msg-gateways.yaml"
+      postInstall: "msg-gateways-setup.sh"
     priority: -5

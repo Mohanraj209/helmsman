@@ -11,6 +11,10 @@ echo Operator init
 istioctl operator init
 
 function installing_istio_and_httpbin() {
+  echo "Installing Global Configmap"
+  kubectl apply -f ./utils/global_configmap.yaml
+  echo "Installed Global Configmap"
+
   echo Create ingress gateways, load balancers and istio monitoring
   kubectl apply -f ./utils/istio-mesh/nodeport/iop-mosip.yaml
   kubectl apply -f ./utils/istio-mesh/nodeport/istio-monitoring/
@@ -53,7 +57,7 @@ function installing_istio_and_httpbin() {
   if [[ -n "$public_exists" && -n "$internal_exists" ]]; then
     echo "Both public and internal gateways exist. Skipping installation."
   else
-    helm -n $ISTIO_NS install istio-addons . \
+    helm -n $ISTIO_NS install istio-addons ./utils/istio-gateway \
       $gateway_option \
       --set proxyProtocol.enabled=false \
       --wait
