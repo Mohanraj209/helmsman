@@ -57,7 +57,7 @@ apps:
 
   rancher-monitoring:
     namespace: cattle-monitoring-system
-    enabled: true
+    enabled: false
     version: 103.1.0+up45.31.1
     chart: mosip/rancher-monitoring
     wait: true
@@ -71,7 +71,7 @@ apps:
 
   elasticsearch:
     namespace: cattle-logging-system
-    enabled: true
+    enabled: false
     version: 17.9.25
     chart: mosip/elasticsearch
     wait: true
@@ -80,7 +80,7 @@ apps:
 
   istio-addons-logging:
     namespace: cattle-logging-system 
-    enabled: true
+    enabled: false
     version: 0.1.0
     chart: ./utils/istio-addons/logging-istio-addons-0.1.0.tgz
     set:
@@ -91,7 +91,7 @@ apps:
     
   rancher-logging-crd:
     namespace: cattle-logging-system
-    enabled: true
+    enabled: false
     version: 103.1.1+up4.4.0
     chart: mosip/rancher-logging-crd
     wait: true
@@ -99,7 +99,7 @@ apps:
     
   rancher-logging:
     namespace: cattle-logging-system
-    enabled: true
+    enabled: false
     version: 103.1.1+up4.4.0
     chart: mosip/rancher-logging
     wait: true
@@ -110,7 +110,7 @@ apps:
         
   postgres:
     namespace: postgres
-    enabled: true
+    enabled: false
     version: 13.1.5
     chart: bitnami/postgresql
     wait: true
@@ -119,7 +119,7 @@ apps:
 
   istio-addons-psql:
     namespace: postgres
-    enabled: true
+    enabled: false
     version: 0.1.0
     chart: ./utils/istio-addons/postgres-istio-addons-0.1.0.tgz
     set:
@@ -129,7 +129,7 @@ apps:
 
   postgres-init:
     namespace: postgres
-    enabled: true
+    enabled: false
     version: 0.0.1-develop
     chart: mosip/postgres-init
     wait: true
@@ -138,7 +138,7 @@ apps:
 
   keycloak:
     namespace: keycloak
-    enabled: true
+    enabled: false
     version: 7.1.18
     chart: mosip/keycloak
     wait: true
@@ -151,7 +151,7 @@ apps:
 
   istio-addons-iam:
     namespace: keycloak
-    enabled: true
+    enabled: false
     version: 0.1.0
     chart: ./utils/istio-addons/iam-istio-addons-0.1.0.tgz
     set:
@@ -163,7 +163,7 @@ apps:
 
   keycloak-init:
     namespace: keycloak
-    enabled: true
+    enabled: false
     version: 12.0.2
     chart: mosip/keycloak-init
     wait: true
@@ -180,7 +180,7 @@ apps:
 
   softhsm-kernel:
     namespace: softhsm
-    enabled: true
+    enabled: false
     version: 12.0.1
     chart: mosip/softhsm
     wait: true
@@ -189,7 +189,7 @@ apps:
 
   softhsm-ida:
     namespace: softhsm
-    enabled: true
+    enabled: false
     version: 12.0.1
     chart: mosip/softhsm
     wait: true
@@ -198,7 +198,7 @@ apps:
 
   minio:
     namespace: minio
-    enabled: true
+    enabled: false
     version: 10.1.6
     chart: mosip/minio
     wait: true
@@ -207,7 +207,7 @@ apps:
 
   istio-addons-minio:
     namespace: minio
-    enabled: true
+    enabled: false
     version: 1.2.0
     chart: ./utils/istio-addons/minio-istio-addons-1.2.0.tgz
     set:
@@ -219,7 +219,7 @@ apps:
 
   clamav:
     namespace: clamav
-    enabled: true
+    enabled: false
     version: 3.1.0
     chart: wiremind/clamav
     wait: true
@@ -228,7 +228,7 @@ apps:
 
   activemq:
     namespace: activemq
-    enabled: true
+    enabled: false
     version: 0.0.2
     chart: mosip/activemq-artemis
     valuesFile: https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/activemq/values.yaml
@@ -241,7 +241,7 @@ apps:
   
   kafka: 
     namespace: kafka
-    enabled: true
+    enabled: false
     version: 18.3.1
     chart: mosip/kafka
     valuesFile:  https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/kafka/values.yaml
@@ -250,7 +250,7 @@ apps:
 
   kafka-ui:
     namespace: kafka
-    enabled: true
+    enabled: false
     version: 0.4.2
     chart: kafka-ui/kafka-ui
     valuesFile: https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/kafka/ui-values.yaml
@@ -259,7 +259,7 @@ apps:
 
   istio-addons-kafka:
     namespace: kafka
-    enabled: true
+    enabled: false
     version: 1.2.0
     chart: ./utils/istio-addons/kafka-istio-addons-1.2.0.tgz
     set:
