@@ -14,35 +14,35 @@ namespaces:
   kube-system:
     protected: true
   cattle-monitoring-system:
-    protected: false
+    protected: true
   cattle-logging-system:
-    protected: false
+    protected: true
   istio-system:
-    protected: false
+    protected: true
   istio-operator:
-    protected: false
+    protected: true
   httpbin:
-    protected: false
+    protected: true
   postgres:
     protected: false
   keycloak:
-    protected: false
+    protected: true
   softhsm:
-    protected: false
+    protected: true
   minio:
-    protected: false
+    protected: true
   clamav:
-    protected: false
+    protected: true
   activemq:
-    protected: false
+    protected: true
   kafka:
-    protected: false
+    protected: true
   s3:
-    protected: false
+    protected: true
   msg-gateways:
-    protected: false
+    protected: true
   captcha:
-    protected: false
+    protected: true
 
 apps:
   rancher-monitoring-crd:
@@ -121,7 +121,7 @@ apps:
     version: 0.1.0
     chart: ./utils/istio-addons/postgres-istio-addons-0.1.0.tgz
     set:
-      postgresHost: "postgres.soil.mosip.net"
+      postgresHost: "postgres.soil1.mosip.net"
     wait: true
     priority: -19
 
