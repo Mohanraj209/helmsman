@@ -76,6 +76,7 @@ jobs:
           kubectl config view
           kubectl get nodes
           pwd
+          ls
           helmsman --debug --${{ github.event.inputs.mode }} -f dsf.yaml
 
      # - name: Deploy using Helmsman
