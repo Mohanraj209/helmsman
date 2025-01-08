@@ -66,7 +66,7 @@ jobs:
           tar xzf helmsman.tar.gz
           sudo mv helmsman /usr/local/bin          
 
-      - name: Configure Kubernetes Context
+      - name: Initiate helmsman to apply the DSF configurations.
         env:
           KUBECONFIG: ${{ secrets.KUBECONFIG }}
         run: |
@@ -83,8 +83,6 @@ jobs:
           export KUBECONFIG=$HOME/.kube/config
           kubectl config view
           kubectl get nodes
-          pwd
-          ls
           helmsman --debug --${{ env.mode }} -f dsf.yaml
 
      # - name: Deploy using Helmsman
