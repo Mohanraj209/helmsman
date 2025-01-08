@@ -14,7 +14,7 @@ namespaces:
   kube-system:
     protected: true
   cattle-monitoring-system:
-    protected: false
+    protected: true
   cattle-logging-system:
     protected: false
   istio-system:
