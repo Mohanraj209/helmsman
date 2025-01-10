@@ -136,7 +136,7 @@ apps:
 
   keycloak:
     namespace: keycloak
-    enabled: false
+    enabled: true
     version: 7.1.18
     chart: mosip/keycloak
     wait: true
@@ -149,7 +149,7 @@ apps:
 
   istio-addons-iam:
     namespace: keycloak
-    enabled: false
+    enabled: true
     version: 0.1.0
     chart: ./utils/istio-addons/iam-istio-addons-0.1.0.tgz
     set:
@@ -161,7 +161,7 @@ apps:
 
   keycloak-init:
     namespace: keycloak
-    enabled: false
+    enabled: true
     version: 12.0.2
     chart: mosip/keycloak-init
     wait: true
