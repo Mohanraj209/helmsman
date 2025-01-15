@@ -11,6 +11,14 @@ on:
         options:
           - dry-run
           - apply
+      install:
+         description: "Choose to install: pre-requisites or external services"
+         required: true
+         default: "pre-requisistes"
+         type: choice
+         options:
+           - pre-requisistes
+           - external-services
   push:
     paths:
       - dsf.yaml
@@ -29,6 +37,14 @@ jobs:
           else
             echo "mode=${{ github.event.inputs.mode }}" >> $GITHUB_ENV
           fi
+
+      - name: Set Default Install
+        run: |
+          if [ -z "${{ github.event.inputs.install }}" ]; then
+            echo "install=external-services" >> $GITHUB_ENV
+          else
+            echo "mode=${{ github.event.inputs.mode }}" >> $GITHUB_ENV
+          fi          
 
       - name: Setup ufw firewall
         run: |
@@ -79,11 +95,20 @@ jobs:
           kubectl version --client        
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
-          chmod 400 $HOME/.kube/config  
+          chmod 400 $HOME/.kube/config
 
-      - name: Deploy using Helmsman
+      - name: Deploy pre-requisites using Helmsman
+        if: ${{ inputs.install == 'pre-requisistes' }}
         run: |
           export KUBECONFIG=$HOME/.kube/config
           kubectl config view
           kubectl get nodes
-          helmsman --debug --${{ env.mode }} -f dsf.yaml
+          helmsman --debug --${{ env.mode }} -f prereq-dsf.yaml
+
+      - name: Deploy external-services using Helmsman
+        if: ${{ inputs.install == 'external-services' }}
+        run: |
+          export KUBECONFIG=$HOME/.kube/config
+          kubectl config view
+          kubectl get nodes
+          helmsman --debug --${{ env.mode }} -f external-dsf.yaml          
