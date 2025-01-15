@@ -10,22 +10,17 @@ on:
         type: choice
         options:
           - dry-run
-          - apply
-      install:
-         description: "Choose to install: pre-requisites or external services"
-         required: true
-         default: "pre-requisistes"
-         type: choice
-         options:
-           - pre-requisistes
-           - external-services
+          - apply       
   push:
     paths:
-      - dsf.yaml
+      - dsf/*
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dsf_files: ${{ fromJson('["prereq-dsf.yaml","external-dsf.yaml"]') }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -36,15 +31,7 @@ jobs:
             echo "mode=apply" >> $GITHUB_ENV
           else
             echo "mode=${{ github.event.inputs.mode }}" >> $GITHUB_ENV
-          fi
-
-      - name: Set Default Install
-        run: |
-          if [ -z "${{ github.event.inputs.install }}" ]; then
-            echo "install=external-services" >> $GITHUB_ENV
-          else
-            echo "mode=${{ github.event.inputs.mode }}" >> $GITHUB_ENV
-          fi          
+          fi        
 
       - name: Setup ufw firewall
         run: |
@@ -96,19 +83,7 @@ jobs:
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
           chmod 400 $HOME/.kube/config
-
-      - name: Deploy pre-requisites using Helmsman
-        if: ${{ inputs.install == 'pre-requisistes' }}
-        run: |
           export KUBECONFIG=$HOME/.kube/config
           kubectl config view
           kubectl get nodes
-          helmsman --debug --${{ env.mode }} -f prereq-dsf.yaml
-
-      - name: Deploy external-services using Helmsman
-        if: ${{ inputs.install == 'external-services' }}
-        run: |
-          export KUBECONFIG=$HOME/.kube/config
-          kubectl config view
-          kubectl get nodes
-          helmsman --debug --${{ env.mode }} -f external-dsf.yaml          
+          helmsman --debug --${{ env.mode }} -f dsf/${{ matrix.dsf_files }}        
