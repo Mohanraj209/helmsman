@@ -79,11 +79,11 @@ jobs:
           kubectl version --client        
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
-          chmod 400 $HOME/.kube/config
+          chmod 400 $HOME/.kube/config  
+
+      - name: Deploy using Helmsman
+        run: |
           export KUBECONFIG=$HOME/.kube/config
           kubectl config view
           kubectl get nodes
           helmsman --debug --${{ env.mode }} -f dsf.yaml
-
-     # - name: Deploy using Helmsman
-     #   run: helmsman --debug --${{ github.event.inputs.mode }} -f dsf.yaml
