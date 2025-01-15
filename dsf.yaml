@@ -26,7 +26,7 @@ namespaces:
   postgres:
     protected: true
   keycloak:
-    protected: false
+    protected: true
   softhsm:
     protected: false
   minio:
@@ -178,7 +178,7 @@ apps:
 
   softhsm-kernel:
     namespace: softhsm
-    enabled: false
+    enabled: true
     version: 12.0.1
     chart: mosip/softhsm
     wait: true
@@ -187,7 +187,7 @@ apps:
 
   softhsm-ida:
     namespace: softhsm
-    enabled: false
+    enabled: true
     version: 12.0.1
     chart: mosip/softhsm
     wait: true
