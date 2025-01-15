@@ -12,15 +12,15 @@ namespaces:
   kube-system:
     protected: true
   cattle-monitoring-system:
-    protected: false
+    protected: true
   cattle-logging-system:
     protected: false
   istio-system:
-    protected: false
+    protected: true
   istio-operator:
-    protected: false
+    protected: true
   httpbin:
-    protected: false
+    protected: true
 
 apps:
   rancher-monitoring-crd:
