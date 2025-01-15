@@ -17,19 +17,19 @@ namespaces:
   softhsm:
     protected: false
   minio:
-    protected: false
+    protected: true
   clamav:
-    protected: false
+    protected: true
   activemq:
-    protected: false
+    protected: true
   kafka:
-    protected: false
+    protected: true
   s3:
-    protected: false
+    protected: true
   msg-gateways:
-    protected: false
+    protected: true
   captcha:
-    protected: false
+    protected: true
 
 apps:
   postgres:
