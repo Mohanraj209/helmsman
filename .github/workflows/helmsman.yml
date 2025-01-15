@@ -20,8 +20,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dsf_files: ${{ fromJson('["prereq-dsf.yaml","external-dsf.yaml"]') }}
-        wg_conf: ${{ fromJson('["wg0","wg1"]') }}
+        include:
+          - dsf_files: prereq-dsf.yaml
+            wg_conf: wg0
+          - dsf_files: external-dsf.yaml
+            wg_conf: wg1
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
