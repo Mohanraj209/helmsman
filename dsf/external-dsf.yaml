@@ -13,9 +13,9 @@ namespaces:
   postgres:
     protected: true
   keycloak:
-    protected: true
-  softhsm:
     protected: false
+  softhsm:
+    protected: true
   minio:
     protected: true
   clamav:
