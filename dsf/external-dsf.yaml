@@ -67,7 +67,7 @@ apps:
     chart: mosip/keycloak
     wait: true
     set:
-      image.repository: "mosipqa/mosip-artemis-keycloak"
+      image.repository: "mosipdev/mosip-artemis-keycloak"
       image.tag: "develop"
       image.pullPolicy: "Always"
     valuesFile: https://raw.githubusercontent.com/mosip/mosip-infra/refs/heads/develop/deployment/v3/external/iam/values.yaml
