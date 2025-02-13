@@ -64,4 +64,3 @@ apps:
       KIBANA_NAME: "elasticsearch-kibana"
     wait: true
     priority: -21
-
