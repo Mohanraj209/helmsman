@@ -12,15 +12,15 @@ namespaces:
   kube-system:
     protected: true
   cattle-monitoring-system:
-    protected: true
+    protected: false
   cattle-logging-system:
-    protected: true
+    protected: false
   istio-system:
-    protected: true
+    protected: false
   istio-operator:
-    protected: true
+    protected: false
   httpbin:
-    protected: true
+    protected: false
 
 apps:
   rancher-monitoring-crd:
@@ -29,7 +29,7 @@ apps:
     version: 103.1.1+up45.31.1
     chart: mosip/rancher-monitoring-crd
     wait: true
-    priority: -24
+    priority: -4
     hooks:
       postInstall: "../hooks/install-istio-and-httpbin.sh"
 
@@ -38,12 +38,15 @@ apps:
     enabled: true
     version: 103.1.0+up45.31.1
     chart: mosip/rancher-monitoring
+    set:
+      grafana.global.cattle.clusterId: "c-m-2xsdpmnx"
+      global.cattle.clusterId: "c-m-2xsdpmnx"
     wait: true
     valuesFile: https://raw.githubusercontent.com/mosip/k8s-infra/refs/heads/develop/monitoring/values.yaml    
-    priority: -23
+    priority: -3
     timeout: 600
     hooks:
-      postInstall: "./hooks/alerting-setup.sh"
+      postInstall: "../hooks/alerting-setup.sh"
 
   elasticsearch:
     namespace: cattle-logging-system
@@ -51,7 +54,7 @@ apps:
     version: 17.9.25
     chart: mosip/elasticsearch
     wait: true
-    priority: -22
+    priority: -2
     valuesFile: https://raw.githubusercontent.com/mosip/k8s-infra/refs/heads/develop/logging/es_values.yaml
 
   istio-addons-logging:
@@ -60,7 +63,26 @@ apps:
     version: 0.1.0
     chart: ../utils/istio-addons/logging-istio-addons-0.1.0.tgz
     set:
-      KIBANA_HOST: "kibana.soil.mosip.net"
+      KIBANA_HOST: "kibana.dev.mosip.net"
       KIBANA_NAME: "elasticsearch-kibana"
     wait: true
-    priority: -21
+    priority: -1
+
+  rancher-logging-crd:
+    namespace: cattle-logging-system
+    enabled: true
+    version: 103.1.1+up4.4.0
+    chart: mosip/rancher-logging-crd
+    wait: true
+    priority: -20
+
+  rancher-logging:
+    namespace: cattle-logging-system
+    enabled: true
+    version: 103.1.1+up4.4.0
+    chart: mosip/rancher-logging
+    wait: true
+    priority: -19
+    timeout: 600
+    hooks:
+      postInstall: "../hooks/post_logging-setup.sh"
