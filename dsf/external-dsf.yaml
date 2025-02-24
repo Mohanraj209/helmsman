@@ -186,3 +186,4 @@ apps:
     hooks:
       postInstall: "../hooks/msg-gateways-setup.sh"
     priority: -1
+    
