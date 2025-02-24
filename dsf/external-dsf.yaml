@@ -153,8 +153,6 @@ apps:
       persistence.storageClass: "nfs-csi-activemq"
     wait: true
     priority: -7
-    hooks:
-      postInstall: "../hooks/captcha-setup.sh 6LfC3-AqAAAAAO8Y97hp4qo3rI2iZUHtfz875Zp6 6LfC3-AqAAAAADSB0yU42sRh-n5-46vZ-rWJPbbU 6LcG4eAqAAAAABKBVTKXb_4TNjGQLG599qgL1MWR 6LcG4eAqAAAAAMUWvBsPSRy_kPIvj4DkkYq2ZZsG 6LfO3-AqAAAAAFwpddXWAUzxjpQlFaJ0dQqip6xy 6LfO3-AqAAAAABhwyXF6nPHe0CTl-9HsbwjL_Sjr"
   
   kafka: 
     namespace: kafka
