@@ -11,7 +11,7 @@ helmRepos:
 
 namespaces:
   postgres:
-    protected: false
+    protected: true
   keycloak:
     protected: false
   softhsm:
