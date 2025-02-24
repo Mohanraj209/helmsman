@@ -52,19 +52,6 @@ apps:
     valuesFile: https://raw.githubusercontent.com/Mohanraj209/mosip-infra/refs/heads/dev/deployment/v3/external/postgres/init_values.yaml
     priority: -13
 
-  keycloak:
-    namespace: keycloak
-    enabled: true
-    version: 7.1.18
-    chart: mosip/keycloak
-    wait: true
-    set:
-      image.repository: "mosipqa/mosip-artemis-keycloak"
-      image.tag: "develop"
-      image.pullPolicy: "Always"
-    valuesFile: https://raw.githubusercontent.com/mosip/mosip-infra/refs/heads/develop/deployment/v3/external/iam/values.yaml
-    priority: -13
-
   istio-addons-iam:
     namespace: keycloak
     enabled: true
@@ -77,50 +64,6 @@ apps:
     wait: true
     priority: -3
 
-  keycloak-init:
-    namespace: keycloak
-    enabled: true
-    version: 12.0.2
-    chart: mosip/keycloak-init
-    wait: true
-    set:
-      IAMHOST_URL: "iam.dev.mosip.net"
-      keycloak.realms.mosip.realm_config.attributes.frontendUrl: "https://iam.dev.mosip.net/auth"
-      keycloak.realms.mosip.realm_config.smtpServer.auth: "false"
-      keycloak.realms.mosip.realm_config.smtpServer.host: "smtp.gmail.com"
-      keycloak.realms.mosip.realm_config.smtpServer.port: "465"
-      keycloak.realms.mosip.realm_config.smtpServer.from: "mosipqa@gmail.com"
-      keycloak.realms.mosip.realm_config.smtpServer.starttls: "false"
-      keycloak.realms.mosip.realm_config.smtpServer.ssl: "true"
-    priority: -12
-
-  softhsm-kernel:
-    namespace: softhsm
-    enabled: true
-    version: 12.0.1
-    chart: mosip/softhsm
-    wait: true
-    valuesFile: https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/hsm/softhsm/values.yaml
-    priority: -11
-
-  softhsm-ida:
-    namespace: softhsm
-    enabled: true
-    version: 12.0.1
-    chart: mosip/softhsm
-    wait: true
-    valuesFile: https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/hsm/softhsm/values.yaml
-    priority: -10
-
-  minio:
-    namespace: minio
-    enabled: true
-    version: 10.1.6
-    chart: mosip/minio
-    wait: true
-    valuesFile: https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/object-store/minio/values.yaml
-    priority: -9
-
   istio-addons-minio:
     namespace: minio
     enabled: true
@@ -132,47 +75,6 @@ apps:
     hooks:
       postInstall: "../hooks/s3-setup.sh minio"
     priority: -2
-
-  clamav:
-    namespace: clamav
-    enabled: true
-    version: 3.1.0
-    chart: wiremind/clamav
-    wait: true
-    valuesFile: https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/antivirus/clamav/values.yaml
-    priority: -8
-
-  activemq:
-    namespace: activemq
-    enabled: true
-    version: 0.0.2
-    chart: mosip/activemq-artemis
-    valuesFile: https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/activemq/values.yaml
-    set: 
-      istio.hosts[0]: "activemq.dev.mosip.net"
-      persistence.storageClass: "nfs-csi-activemq"
-    wait: true
-    priority: -7
-    hooks:
-      postInstall: "../hooks/captcha-setup.sh 6LfC3-AqAAAAAO8Y97hp4qo3rI2iZUHtfz875Zp6 6LfC3-AqAAAAADSB0yU42sRh-n5-46vZ-rWJPbbU 6LcG4eAqAAAAABKBVTKXb_4TNjGQLG599qgL1MWR 6LcG4eAqAAAAAMUWvBsPSRy_kPIvj4DkkYq2ZZsG 6LfO3-AqAAAAAFwpddXWAUzxjpQlFaJ0dQqip6xy 6LfO3-AqAAAAABhwyXF6nPHe0CTl-9HsbwjL_Sjr"
-  
-  kafka: 
-    namespace: kafka
-    enabled: true
-    version: 18.3.1
-    chart: mosip/kafka
-    valuesFile:  https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/kafka/values.yaml
-    wait: true
-    priority: -6
-
-  kafka-ui:
-    namespace: kafka
-    enabled: true
-    version: 0.4.2
-    chart: kafka-ui/kafka-ui
-    valuesFile: https://raw.githubusercontent.com/mosip/mosip-infra/develop/deployment/v3/external/kafka/ui-values.yaml
-    wait: true
-    priority: -5
 
   istio-addons-kafka:
     namespace: kafka
