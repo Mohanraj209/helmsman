@@ -23,16 +23,6 @@ namespaces:
     protected: false
 
 apps:
-  rancher-monitoring-crd:
-    namespace: cattle-monitoring-system
-    enabled: true
-    version: 103.1.1+up45.31.1
-    chart: mosip/rancher-monitoring-crd
-    wait: true
-    priority: -7
-    hooks:
-      postInstall: "../hooks/install-istio-and-httpbin.sh"
-
   rancher-monitoring:
     namespace: cattle-monitoring-system
     enabled: true
