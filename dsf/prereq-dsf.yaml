@@ -29,7 +29,7 @@ apps:
     version: 103.1.1+up45.31.1
     chart: mosip/rancher-monitoring-crd
     wait: true
-    priority: -4
+    priority: -7
     hooks:
       postInstall: "../hooks/install-istio-and-httpbin.sh"
 
@@ -43,7 +43,7 @@ apps:
       global.cattle.clusterId: "c-m-2xsdpmnx"
     wait: true
     valuesFile: https://raw.githubusercontent.com/mosip/k8s-infra/refs/heads/develop/monitoring/values.yaml    
-    priority: -3
+    priority: -6
     timeout: 600
     hooks:
       postInstall: "../hooks/alerting-setup.sh"
@@ -54,7 +54,7 @@ apps:
     version: 17.9.25
     chart: mosip/elasticsearch
     wait: true
-    priority: -2
+    priority: -5
     valuesFile: https://raw.githubusercontent.com/mosip/k8s-infra/refs/heads/develop/logging/es_values.yaml
 
   istio-addons-logging:
@@ -66,7 +66,7 @@ apps:
       KIBANA_HOST: "kibana.dev.mosip.net"
       KIBANA_NAME: "elasticsearch-kibana"
     wait: true
-    priority: -1
+    priority: -4
 
   rancher-logging-crd:
     namespace: cattle-logging-system
@@ -74,7 +74,7 @@ apps:
     version: 103.1.1+up4.4.0
     chart: mosip/rancher-logging-crd
     wait: true
-    priority: -20
+    priority: -3
 
   rancher-logging:
     namespace: cattle-logging-system
@@ -82,7 +82,7 @@ apps:
     version: 103.1.1+up4.4.0
     chart: mosip/rancher-logging
     wait: true
-    priority: -19
+    priority: -2
     timeout: 600
     hooks:
       postInstall: "../hooks/post_logging-setup.sh"
