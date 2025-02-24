@@ -12,24 +12,24 @@ metadata:
   name: global
   namespace: default
 data:
-  installation-name: soil
-  installation-domain: soil.mosip.net
+  installation-name: dev
+  installation-domain: dev.mosip.net
   mosip-version: develop
-  mosip-api-host: api.soil.mosip.net
-  mosip-api-internal-host: api-internal.soil.mosip.net
-  mosip-prereg-host: prereg.soil.mosip.net
-  mosip-activemq-host: activemq.soil.mosip.net
-  mosip-kibana-host: kibana.soil.mosip.net
-  mosip-admin-host: admin.soil.mosip.net
-  mosip-regclient-host: regclient.soil.mosip.net
-  mosip-minio-host: minio.soil.mosip.net
-  mosip-kafka-host: kafka.soil.mosip.net
-  mosip-iam-external-host: iam.soil.mosip.net
-  mosip-postgres-host: postgres.soil.mosip.net
-  mosip-pmp-host: pmp.soil.mosip.net
-  mosip-resident-host: resident.soil.mosip.net
-  mosip-compliance-host: compliance.soil.mosip.net
-  mosip-esignet-host: esignet.soil.mosip.net
-  mosip-smtp-host: smtp.soil.mosip.net
-  mosip-signup-host: signup.soil.mosip.net
+  mosip-api-host: api.dev.mosip.net
+  mosip-api-internal-host: api-internal.dev.mosip.net
+  mosip-prereg-host: prereg.dev.mosip.net
+  mosip-activemq-host: activemq.dev.mosip.net
+  mosip-kibana-host: kibana.dev.mosip.net
+  mosip-admin-host: admin.dev.mosip.net
+  mosip-regclient-host: regclient.dev.mosip.net
+  mosip-minio-host: minio.dev.mosip.net
+  mosip-kafka-host: kafka.dev.mosip.net
+  mosip-iam-external-host: iam.dev.mosip.net
+  mosip-postgres-host: postgres.dev.mosip.net
+  mosip-pmp-host: pmp.dev.mosip.net
+  mosip-resident-host: resident.dev.mosip.net
+  mosip-compliance-host: compliance.dev.mosip.net
+  mosip-esignet-host: esignet.dev.mosip.net
+  mosip-smtp-host: smtp.dev.mosip.net
+  mosip-signup-host: signup.dev.mosip.net
   is_glowroot_env: absent
